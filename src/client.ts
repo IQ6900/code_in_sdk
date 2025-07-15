@@ -121,13 +121,13 @@ export async function createDbPingTransactionOnserver(pingWalletAddressString: s
     const userKeyString = userKey.toString();
 
     const requestData = {
-        userKeyString,
-        pingWalletAddressString,
-        pingAmount,
-        handle,
-        tail_tx,
-        type,
-        offset
+        userKeyString:userKeyString,
+        pingWalletString:pingWalletAddressString,
+        pingAmount:pingAmount,
+        handle:handle,
+        tail_tx:tail_tx,
+        type:type,
+        offset:offset
     };
     try {
         const response = await fetch(url, {
