@@ -1,0 +1,6 @@
+1. make the env example
+2. change this file to uploader and reader
+3. make the input folders, and the results folders
+4. think about error handler.
+5. test the change mongodb id as users one, make allow every db is work.
+cli ask what db you want to make , and return with basic setting, and explain how to set is great
