@@ -3,7 +3,8 @@ import buffer from "buffer";
 import {Connection, Keypair, Transaction} from "@solana/web3.js";
 
 import {config} from "./config";
-import anchor from "@coral-xyz/anchor";
+const anchor = require("@coral-xyz/anchor");
+
 const network = config.rpc!
 const web3 = anchor.web3;
 const keypair = config.keypair;
