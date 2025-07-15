@@ -23,7 +23,7 @@ async function bringOffset(dataTxid: string) {
     return txInfo.offset;
 }
 
-async function fetchDataSignatures(address: string, max = 475) {
+export async function fetchDataSignatures(address: string, max = 100) {
 
     try {
         const DBPDA = new PublicKey(address);

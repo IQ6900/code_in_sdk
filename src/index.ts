@@ -1,12 +1,14 @@
-import { user_init } from './transaction';
-import { readCode, fetchLargeFileAndDoCache, dataValidation } from './reader';
-import { codeIn, codeInAfterErr } from './uploader';
+import {user_init} from './transaction';
+import {readCode, fetchLargeFileAndDoCache, dataValidation, fetchDataSignatures} from './reader';
+import {codeIn, codeInAfterErr, codeToUserWallet} from './uploader';
 
 export default {
     user_init,
     readCode,
     fetchLargeFileAndDoCache,
     dataValidation,
+    fetchDataSignatures,
     codeIn,
-    codeInAfterErr
+    codeInAfterErr,
+    codeToUserWallet
 };

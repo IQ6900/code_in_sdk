@@ -83,7 +83,7 @@ export async function createCodeInTransactionOnServer(code: string, before_tx: s
 }
 
 export async function createDbCodeTransactionOnserver(handle: string, tail_tx: string, type: string, offset: string) {
-    const url = iqHost + '/create-db-code-free-transaction'; // 서버 URL로 변경
+    const url = iqHost + '/create-db-code-transaction';
     const userKey = keypair.publicKey;
     const userKeyString = userKey.toString();
 
@@ -115,6 +115,40 @@ export async function createDbCodeTransactionOnserver(handle: string, tail_tx: s
     }
 }
 
+export async function createDbPingTransactionOnserver(pingWalletAddressString: string, pingAmount:number,handle:string,tail_tx:string,type:string,  offset: string) {
+    const url = iqHost + '/create-db-ping-transaction';
+    const userKey = keypair.publicKey;
+    const userKeyString = userKey.toString();
+
+    const requestData = {
+        userKeyString,
+        pingWalletAddressString,
+        pingAmount,
+        handle,
+        tail_tx,
+        type,
+        offset
+    };
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.statusText}`);
+        }
+        const data:any = await response.json();
+        return _translate_transaction(data.transaction);
+
+    } catch (error) {
+        console.error("Failed to create transaction:", error);
+        throw error;
+    }
+}
 
 export async function makeMerkleRootFromServer(dataList: Array<string>) {
     const url = iqHost + "/generate-merkle-root";
