@@ -1,5 +1,5 @@
 import {config} from './config';
-import bs58 from 'bs58';
+const bs58 = require('bs58');
 import {_translate_transaction} from "./transaction";
 
 import {fetch} from "undici";

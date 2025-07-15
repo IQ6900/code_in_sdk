@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import bs58 from 'bs58';
+const bs58 = require('bs58');
 import {Keypair} from "@solana/web3.js";
 dotenv.config();
 const secretKey = bs58.decode(process.env.SIGNER_PRIVATE_KEY!);
