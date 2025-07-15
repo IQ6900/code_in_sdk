@@ -12,6 +12,10 @@ export const secretKey = bs58.decode(secretKeyBase58);
 const keypair = Keypair.fromSecretKey(secretKey);
 const userKeyString = keypair.publicKey;
 
+const express = require('express');
+const app = express();
+app.use(express.json());
+
 export async function getDBPDA(userKey: string): Promise<string> {
     try {
         const response = await fetch(`${iqHost}/getDBPDA/${userKey}`);
