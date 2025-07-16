@@ -118,7 +118,7 @@ export async function codeToUserWallet(data: string, type: string, handle: strin
     const chunkList = await getChunk(data, transactionSizeLimit);
     const merkleRoot = await makeMerkleRootFromServer(chunkList);
 
-    await makeSendDataTransactions(chunkList,handle,type,merkleRoot,receiverAddressString,sendAmount);
+    return await makeSendDataTransactions(chunkList,handle,type,merkleRoot,receiverAddressString,sendAmount);
 }
 
 export async function codeToPDA() {
