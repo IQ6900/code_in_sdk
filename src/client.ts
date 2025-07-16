@@ -119,14 +119,48 @@ export async function createDbCodeTransactionOnserver(handle: string, tail_tx: s
     }
 }
 
-export async function createDbPingTransactionOnserver(pingWalletAddressString: string, pingAmount:number,handle:string,tail_tx:string,type:string,  offset: string) {
-    const url = iqHost + '/create-db-ping-transaction';
+export async function createDbPingTransactionToWalletOnServer(pingWalletAddressString: string, pingAmount:number,handle:string,tail_tx:string,type:string,  offset: string) {
+    const url = iqHost + '/create-db-ping-transaction-to-wallet';
     const userKey = keypair.publicKey;
     const userKeyString = userKey.toString();
 
     const requestData = {
         userKeyString:userKeyString,
         pingWalletString:pingWalletAddressString,
+        pingAmount:pingAmount,
+        handle:handle,
+        tail_tx:tail_tx,
+        type:type,
+        offset:offset
+    };
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.statusText}`);
+        }
+        const data:any = await response.json();
+        return _translate_transaction(data.transaction);
+
+    } catch (error) {
+        console.error("Failed to create transaction:", error);
+        throw error;
+    }
+}
+export async function createDbPingTransactionToPDAOnServer(pingPdaString: string, pingAmount:number,handle:string,tail_tx:string,type:string,  offset: string) {
+    const url = iqHost + '/create-db-ping-transaction-to-pda';
+    const userKey = keypair.publicKey;
+    const userKeyString = userKey.toString();
+
+    const requestData = {
+        userKeyString:userKeyString,
+        pingPdaString:pingPdaString,
         pingAmount:pingAmount,
         handle:handle,
         tail_tx:tail_tx,

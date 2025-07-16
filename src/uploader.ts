@@ -5,7 +5,9 @@ import {
 
 import {
     createCodeInTransactionOnServer,
-    createDbCodeTransactionOnserver, createDbPingTransactionOnserver,
+    createDbCodeTransactionOnserver,
+    createDbPingTransactionToWalletOnServer,
+    createDbPingTransactionToPDAOnServer,
     makeMerkleRootFromServer,
 } from "./client";
 import {txSend} from "./transaction";
@@ -41,7 +43,7 @@ async function makeTransactions(chunkList: Array<string>, handle: string, type: 
     return await txSend(tx);
 }
 
-async function makeSendDataTransactions(chunkList: Array<string>, handle: string, type: string, offset: string, receiverAddressString: string, sendAmount: number) {
+async function makeSendDataTransactionsToWallet(chunkList: Array<string>, handle: string, type: string, offset: string, receiverAddressString: string, sendAmount: number) {
     let beforeHash: string = "Genesis";
     let method = 0;
     let decode_break = 0;
@@ -67,7 +69,36 @@ async function makeSendDataTransactions(chunkList: Array<string>, handle: string
             }
         }
     }
-    const tx = await createDbPingTransactionOnserver(receiverAddressString, sendAmount, handle, beforeHash, type, offset); //
+    const tx = await createDbPingTransactionToWalletOnServer(receiverAddressString, sendAmount, handle, beforeHash, type, offset); //
+    return await txSend(tx);
+}
+async function makeSendDataTransactionsToPDA(chunkList: Array<string>, handle: string, type: string, offset: string, receiverPDAAddressString: string, sendAmount: number) {
+    let beforeHash: string = "Genesis";
+    let method = 0;
+    let decode_break = 0;
+    let num = 0;
+    for (let text of chunkList) {
+        try {
+            num++;
+            const tx = await createCodeInTransactionOnServer(text, beforeHash, method, decode_break);
+            beforeHash = await txSend(tx);
+            console.log(num.toString() + '/' + chunkList.length.toString())
+        } catch (error) {
+            console.error(`Transaction ${num} failed, beforeHash:${beforeHash} `, error);
+            let result;
+            while (!result) {
+                const tx = await createCodeInTransactionOnServer(text, beforeHash, method, decode_break);
+                try {
+                    beforeHash = await txSend(tx);
+                    result = true;
+                } catch (e) {
+                    result = false;
+                }
+
+            }
+        }
+    }
+    const tx = await createDbPingTransactionToPDAOnServer(receiverPDAAddressString, sendAmount, handle, beforeHash, type, offset); //
     return await txSend(tx);
 }
 
@@ -118,9 +149,12 @@ export async function codeToUserWallet(data: string, type: string, handle: strin
     const chunkList = await getChunk(data, transactionSizeLimit);
     const merkleRoot = await makeMerkleRootFromServer(chunkList);
 
-    return await makeSendDataTransactions(chunkList,handle,type,merkleRoot,receiverAddressString,sendAmount);
+    return await makeSendDataTransactionsToWallet(chunkList,handle,type,merkleRoot,receiverAddressString,sendAmount);
+}
+export async function codeToPDA(data: string, type: string, handle: string, pdaAddressString: string, sendAmount: number) {
+    const chunkList = await getChunk(data, transactionSizeLimit);
+    const merkleRoot = await makeMerkleRootFromServer(chunkList);
+
+    return await makeSendDataTransactionsToPDA(chunkList,handle,type,merkleRoot,pdaAddressString,sendAmount);
 }
 
-export async function codeToPDA() {
-
-}
