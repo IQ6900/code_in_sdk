@@ -23,7 +23,7 @@ export async function getDBPDA(userKey: string): Promise<string> {
         const data: any = await response.json();
 
         if (response.ok) {
-            return data.DBPDA as string;
+            return data.DBPDA;
         } else {
             throw new Error(data.error || 'Failed to fetch PDA');
         }
@@ -39,7 +39,7 @@ export async function getServerPDA(userKey: string, serverId: string): Promise<s
         const data: any = await response.json();
 
         if (response.ok) {
-            return data.PDA as string;
+            return data.PDA;
         } else {
             throw new Error(data.error || 'Failed to fetch PDA');
         }

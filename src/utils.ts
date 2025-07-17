@@ -1,4 +1,4 @@
-import {Logs} from "@solana/web3.js";
+import {Logs, PublicKey} from "@solana/web3.js";
 
 
 export async function sleep(ms: number) {

@@ -1,6 +1,5 @@
-import {createInitTransactionOnServer, createServerInitTransactionOnServer, getServerPDA} from "./client";
-import buffer from "buffer";
-import {Connection, Keypair, Transaction} from "@solana/web3.js";
+import {createInitTransactionOnServer, createServerInitTransactionOnServer, getDBPDA, getServerPDA} from "./client";
+import {Connection, PublicKey, Transaction} from "@solana/web3.js";
 
 import {config} from "./config";
 
@@ -13,10 +12,16 @@ const keypair = config.keypair;
 export async function server_init(serverType: string, serverID: string, allowedMerkleRoot: string = "public") {
     const userKey = keypair.publicKey;
     const useKeyString = userKey.toString()
+    const PDA = await getServerPDA(useKeyString, serverID);
+
+    const isPDAExist = await pda_check(new PublicKey(PDA));
+    if (isPDAExist) {
+        console.log("PDA Exist :", PDA);
+        return PDA
+    }
     const transaction = await createServerInitTransactionOnServer(useKeyString, serverType, serverID, allowedMerkleRoot);
     if (transaction != null) {
         await txSend(transaction)
-        const PDA = await getServerPDA(useKeyString, serverID);
         console.log("Your Server PDA address:", PDA);
         return PDA;
     } else {
@@ -28,11 +33,29 @@ export async function user_init() {
     const userKey = keypair.publicKey;
     const useKeyString = userKey.toString()
     const transaction = await createInitTransactionOnServer(useKeyString)
+    const PDA = await getDBPDA(useKeyString);
+
+    const isPDAExist = await pda_check(new PublicKey(PDA));
+    if (isPDAExist) {
+        console.log("PDA Exist");
+        return PDA
+    }
+
     if (transaction != null) {
         await txSend(transaction)
 
     } else {
         console.error("Transaction build failed");
+    }
+}
+
+export async function pda_check(PDA: PublicKey) {
+    try {
+        const connection = new web3.Connection(network);
+
+        return await connection.getAccountInfo(PDA);
+    } catch (error) {
+        console.error("PDA Check failed:", error);
     }
 }
 
