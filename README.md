@@ -62,9 +62,10 @@ await iqsdk.user_init();
 ### Write data to chain
 
 ```ts
-import { codeIn } from 'iq-sdk';
+import iqsdk from 'iq-sdk';
 
-await codeIn("your data here", "manual_datatype", "your_handle");
+
+await iqsdk.codeIn("your data here", "manual_datatype", "your_handle");
 ```
 
 ---
@@ -72,17 +73,17 @@ await codeIn("your data here", "manual_datatype", "your_handle");
 ### Fetch data from chain
 
 ```ts
-import { readCode } from 'iq-sdk';
+import iqsdk from 'iq-sdk';
 
-const result = await readCode("your_transaction_id");
+const result = await iqsdk.readCode("your_transaction_id");
 ```
 
 Or fetch and cache large files:
 
 ```ts
-import { fetchLargeFileAndDoCache } from 'iq-sdk';
+import iqsdk from 'iq-sdk';
 
-const content = await fetchLargeFileAndDoCache("your_transaction_id");
+const content = await iqsdk.fetchLargeFileAndDoCache("your_transaction_id");
 ```
 
 ---
@@ -90,7 +91,7 @@ const content = await fetchLargeFileAndDoCache("your_transaction_id");
 ### Validate local data
 
 ```ts
-import { dataValidation } from 'iq-sdk';
+import iqsdk from 'iq-sdk';
 
-await dataValidation("transaction_id", "localDataString");
+await iqsdk.dataValidation("transaction_id", "localDataString");
 ```
