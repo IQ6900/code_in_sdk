@@ -1,4 +1,8 @@
-import {Logs, PublicKey} from "@solana/web3.js";
+import {config} from "./config";
+const keypair = config.keypair;
+export function getMyPublicKey(){
+    return keypair.publicKey;
+}
 
 
 export async function sleep(ms: number) {

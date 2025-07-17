@@ -8,7 +8,6 @@ const anchor = require("@coral-xyz/anchor");
 const network = config.rpc!
 const web3 = anchor.web3;
 const keypair = config.keypair;
-
 export async function server_init(serverType: string, serverID: string, allowedMerkleRoot: string = "public") {
     const userKey = keypair.publicKey;
     const useKeyString = userKey.toString()
