@@ -1,12 +1,13 @@
 import {config} from './config';
-const bs58 = require('bs58');
 import {_translate_transaction} from "./transaction";
 
 import {fetch} from "undici";
 import {Keypair} from "@solana/web3.js";
 
+const bs58 = require('bs58');
+
 const iqHost = config.iqHost;
-export const secretKeyBase58 =  config.signerPrivateKey!; //paste your secret key
+export const secretKeyBase58 = config.signerPrivateKey!; //paste your secret key
 
 export const secretKey = bs58.decode(secretKeyBase58);
 const keypair = Keypair.fromSecretKey(secretKey);
@@ -32,6 +33,53 @@ export async function getDBPDA(userKey: string): Promise<string> {
     }
 }
 
+export async function getServerPDA(userKey: string, serverID: string): Promise<string> {
+    try {
+        const response = await fetch(`${iqHost}/get-server-pda/${userKey}/${serverID}`);
+        const data: any = await response.json();
+
+        if (response.ok) {
+            return data.PDA as string;
+        } else {
+            throw new Error(data.error || 'Failed to fetch PDA');
+        }
+    } catch (error) {
+        console.error('Error fetching PDA:', error);
+        return "null";
+    }
+}
+
+export async function createServerInitTransactionOnServer(userKey: string, serverType: string, serverID: string, allowedMerkleRoot: string = "public") {
+    const url = iqHost + '/initialize-server';
+    try {
+        const requestData = {
+            userKey: userKey,
+            serverType: serverType,
+            serverID: serverID,
+            allowedMerkleRoot: allowedMerkleRoot,
+        };
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+        });
+        if (response.ok) {
+            try {
+                const data: any = await response.json();
+                return await _translate_transaction(data.transaction);
+            } catch (error) {
+                console.error('Error creating transaction:', error);
+                return null;
+            }
+        }
+    } catch (error) {
+        console.error('Error creating initTransactionOnServer:', error);
+        return null;
+    }
+}
+
 export async function createInitTransactionOnServer(userKeyString: string) {
     try {
         const response = await fetch(iqHost + `/initialize-user/${userKeyString}`);
@@ -39,7 +87,7 @@ export async function createInitTransactionOnServer(userKeyString: string) {
             try {
 
                 const responseData = await response.json();
-                const data:any = responseData;
+                const data: any = responseData;
                 const tx = await _translate_transaction(data.transaction)
                 return tx;
             } catch (error) {
@@ -76,7 +124,7 @@ export async function createCodeInTransactionOnServer(code: string, before_tx: s
         if (!response.ok) {
             throw new Error(`Error: ${response}`);
         }
-        const data:any = await response.json();
+        const data: any = await response.json();
 
         return await _translate_transaction(data.transaction);
 
@@ -110,7 +158,7 @@ export async function createDbCodeTransactionOnserver(handle: string, tail_tx: s
         if (!response.ok) {
             throw new Error(`Error: ${response.statusText}`);
         }
-        const data:any = await response.json();
+        const data: any = await response.json();
         return _translate_transaction(data.transaction);
 
     } catch (error) {
@@ -119,19 +167,19 @@ export async function createDbCodeTransactionOnserver(handle: string, tail_tx: s
     }
 }
 
-export async function createDbPingTransactionToWalletOnServer(pingWalletAddressString: string, pingAmount:number,handle:string,tail_tx:string,type:string,  offset: string) {
+export async function createDbPingTransactionToWalletOnServer(pingWalletAddressString: string, pingAmount: number, handle: string, tail_tx: string, type: string, offset: string) {
     const url = iqHost + '/create-db-ping-transaction-to-wallet';
     const userKey = keypair.publicKey;
     const userKeyString = userKey.toString();
 
     const requestData = {
-        userKeyString:userKeyString,
-        pingWalletString:pingWalletAddressString,
-        pingAmount:pingAmount,
-        handle:handle,
-        tail_tx:tail_tx,
-        type:type,
-        offset:offset
+        userKeyString: userKeyString,
+        pingWalletString: pingWalletAddressString,
+        pingAmount: pingAmount,
+        handle: handle,
+        tail_tx: tail_tx,
+        type: type,
+        offset: offset
     };
     try {
         const response = await fetch(url, {
@@ -145,7 +193,7 @@ export async function createDbPingTransactionToWalletOnServer(pingWalletAddressS
         if (!response.ok) {
             throw new Error(`Error: ${response.statusText}`);
         }
-        const data:any = await response.json();
+        const data: any = await response.json();
         return _translate_transaction(data.transaction);
 
     } catch (error) {
@@ -153,19 +201,20 @@ export async function createDbPingTransactionToWalletOnServer(pingWalletAddressS
         throw error;
     }
 }
-export async function createDbPingTransactionToPDAOnServer(pingPdaString: string, pingAmount:number,handle:string,tail_tx:string,type:string,  offset: string) {
+
+export async function createDbPingTransactionToPDAOnServer(pingPdaString: string, pingAmount: number, handle: string, tail_tx: string, type: string, offset: string) {
     const url = iqHost + '/create-db-ping-transaction-to-pda';
     const userKey = keypair.publicKey;
     const userKeyString = userKey.toString();
 
     const requestData = {
-        userKeyString:userKeyString,
-        pingPdaString:pingPdaString,
-        pingAmount:pingAmount,
-        handle:handle,
-        tail_tx:tail_tx,
-        type:type,
-        offset:offset
+        userKeyString: userKeyString,
+        pingPdaString: pingPdaString,
+        pingAmount: pingAmount,
+        handle: handle,
+        tail_tx: tail_tx,
+        type: type,
+        offset: offset
     };
     try {
         const response = await fetch(url, {
@@ -179,7 +228,7 @@ export async function createDbPingTransactionToPDAOnServer(pingPdaString: string
         if (!response.ok) {
             throw new Error(`Error: ${response.statusText}`);
         }
-        const data:any = await response.json();
+        const data: any = await response.json();
         return _translate_transaction(data.transaction);
 
     } catch (error) {
@@ -206,7 +255,7 @@ export async function makeMerkleRootFromServer(dataList: Array<string>) {
             throw new Error(`Error: ${response.statusText}`);
         }
 
-        const data:any = await response.json();
+        const data: any = await response.json();
 
         return data.merkleRoot;
 
@@ -215,8 +264,9 @@ export async function makeMerkleRootFromServer(dataList: Array<string>) {
         throw error;
     }
 }
+
 //read functions
-export async function fetchChunksUntilComplete(txId:string) {
+export async function fetchChunksUntilComplete(txId: string) {
     let allChunks = [];
     let currentTx = txId;
     let i = 0;
@@ -226,7 +276,7 @@ export async function fetchChunksUntilComplete(txId:string) {
         const url = `${iqHost}/get_transaction_chunks/${currentTx}`; //read transaction by 100 tx read
         const response = await fetch(url);
 
-        const data:any = await response.json();
+        const data: any = await response.json();
 
         const chars = data.resultStr;
         allChunks.push(chars);
@@ -238,7 +288,8 @@ export async function fetchChunksUntilComplete(txId:string) {
     const result = resultReverse.join("");
     return {result};
 }
-export async function getCacheFromServer(txId:string, merkleRoot:string) {
+
+export async function getCacheFromServer(txId: string, merkleRoot: string) {
     const url = `${iqHost}/getCache?txId=${encodeURIComponent(txId)}&merkleRoot=${encodeURIComponent(merkleRoot)}`;
     try {
         const response = await fetch(url);
@@ -254,7 +305,7 @@ export async function getCacheFromServer(txId:string, merkleRoot:string) {
     }
 }
 
-export async function putCacheToServer(chunk:string[], merkleRoot:string) {
+export async function putCacheToServer(chunk: string[], merkleRoot: string) {
     const url = `${iqHost}/putCache`;
 
     try {
@@ -272,12 +323,12 @@ export async function putCacheToServer(chunk:string[], merkleRoot:string) {
     }
 }
 
-export async function getTransactionInfoOnServer(txId:string) {
+export async function getTransactionInfoOnServer(txId: string) {
     try {
         const response = await fetch(iqHost + `/get_transaction_info/${txId}`);
         if (response.ok) {
             try {
-                const data:any = await response.json();
+                const data: any = await response.json();
                 return data.argData;
             } catch (error) {
                 console.error('Error creating transaction:', error);
@@ -290,7 +341,7 @@ export async function getTransactionInfoOnServer(txId:string) {
     }
 }
 
-export async function getTransactionDataFromBlockchainOnServer(txId:string) {
+export async function getTransactionDataFromBlockchainOnServer(txId: string) {
     try {
         const response = await fetch(iqHost + `/get_transaction_result/${txId}`);
         if (response.ok) {
@@ -301,7 +352,7 @@ export async function getTransactionDataFromBlockchainOnServer(txId:string) {
                 return null;
             }
         }
-        console.error("Error getting transaction:",txId);
+        console.error("Error getting transaction:", txId);
         return null;
     } catch (error) {
         console.error("Error creating initTransactionOnServer:", error);

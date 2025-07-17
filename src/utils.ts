@@ -1,3 +1,4 @@
+import {Logs} from "@solana/web3.js";
 
 
 export async function sleep(ms: number) {
@@ -15,10 +16,12 @@ export function naturalSort(files: string[]): string[] {
         return aNum - bNum || a.localeCompare(b);
     });
 }
-export function isMerkleRoot(str:string) {
+
+export function isMerkleRoot(str: string) {
     const base58Alphabet = /^[1-9A-HJ-NP-Za-km-z]+$/;
     return base58Alphabet.test(str) && str.length === 44;
 }
+
 export async function getChunk(textData: string, chunkSize: number): Promise<string[]> {
     const datalength = textData.length;
     const totalChunks = Math.ceil(datalength / chunkSize);
@@ -33,4 +36,16 @@ export async function getChunk(textData: string, chunkSize: number): Promise<str
     } else {
         return chunks;
     }
+}
+
+export function isChatTransaction(logs: Logs): { isChatRoom: boolean, type: string } {
+    if (!logs.logs || logs.logs.length === 0) {
+        return {isChatRoom: false, type: ""}
+    }
+    const logString = logs.logs.join('')
+
+    if (logString.includes("group_chat")) {
+        return {isChatRoom: true, type: "group_chat"}
+    }
+    return {isChatRoom: false, type: ""}
 }

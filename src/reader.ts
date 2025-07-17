@@ -1,6 +1,6 @@
-import {Connection, PublicKey} from "@solana/web3.js";
+import {Connection, PublicKey,LogsFilter} from "@solana/web3.js";
 import {config} from "./config";
-import {getChunk, isMerkleRoot} from "./utils";
+import {getChunk, isChatTransaction, isMerkleRoot} from "./utils";
 import {
     fetchChunksUntilComplete,
     getCacheFromServer,
@@ -89,4 +89,52 @@ export async function fetchLargeFileAndDoCache(txId: string): Promise<string> {
         //we need to update this for smart fix. allow user inscribe from middle
     }
    return data.result;
+}
+async function getParsedTransaction(transactionSignature: string, retries = 4) {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+            const connection = new Connection(network, 'processed');
+
+            const transactionDetails = await connection.getParsedTransactions(
+                [transactionSignature],
+                {
+                    maxSupportedTransactionVersion: 0,
+                },
+            )
+            if (transactionDetails && transactionDetails[0] !== null) {
+                return transactionDetails
+            }
+
+            console.log(`Attempt ${attempt}: No transaction details found for ${transactionSignature}`)
+        } catch (error) {
+            console.error(`Attempt ${attempt}: Error fetching transaction details`, error)
+        }
+
+        // Delay before retrying
+        await new Promise((resolve) => setTimeout(resolve, 1000 * attempt))
+    }
+
+    console.error(`Failed to fetch transaction details after ${retries} retries for signature:`, transactionSignature)
+    return null
+}
+
+export async function joinChat(pdaString:string){
+    const connection = new Connection(network, 'processed');
+    const chatPDA = new PublicKey(pdaString);
+    console.log(`Join chat on ${pdaString} ...`); // lets change this as a handle name (chat name)
+
+    connection.onLogs(
+        chatPDA,
+        async (logs, ctx) => {
+            const { isChatRoom,type } = isChatTransaction(logs)
+            if (!isChatRoom) {
+                // console.log('TRANSACTION IS NOT Chat', logs.signature)
+                return
+            }
+            const transactionSignature = logs.signature
+
+            const transactionDetails = await getParsedTransaction(transactionSignature)
+            console.log(transactionDetails)
+        }
+    );
 }
