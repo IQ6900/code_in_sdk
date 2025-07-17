@@ -33,9 +33,9 @@ export async function getDBPDA(userKey: string): Promise<string> {
     }
 }
 
-export async function getServerPDA(userKey: string, serverID: string): Promise<string> {
+export async function getServerPDA(userKey: string, serverId: string): Promise<string> {
     try {
-        const response = await fetch(`${iqHost}/get-server-pda/${userKey}/${serverID}`);
+        const response = await fetch(`${iqHost}/get-server-pda/${userKey}/${serverId}`);
         const data: any = await response.json();
 
         if (response.ok) {
