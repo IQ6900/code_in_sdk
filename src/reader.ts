@@ -1,14 +1,13 @@
-import {Connection, PublicKey,LogsFilter} from "@solana/web3.js";
+import {Connection, PublicKey, LogsFilter} from "@solana/web3.js";
 import {config} from "./config";
 import {getChunk, isChatTransaction, isMerkleRoot} from "./utils";
 import {
     fetchChunksUntilComplete,
     getCacheFromServer,
-     getTransactionDataFromBlockchainOnServer,
+    getTransactionDataFromBlockchainOnServer,
     getTransactionInfoOnServer,
     makeMerkleRootFromServer, putCacheToServer,
 } from "./client";
-
 
 
 const network = config.rpc;
@@ -46,13 +45,34 @@ export async function readCode(dataTxid: string) {
     const type_field = txInfo.type_field;
 
     if (type_field) {
-        let result:any = "";
+        let result: any = "";
         if (isMerkleRoot(offset)) {
             result = await getCacheFromServer(dataTxid, offset);
         } else {
             result = await getTransactionDataFromBlockchainOnServer(dataTxid);
         }
         return result;
+    }
+}
+
+async function readChat(dataTxid: string) {
+    const txInfo = await getTransactionInfoOnServer(dataTxid);
+    const offset = txInfo.offset;
+    const type_field = txInfo.type_field;
+    const handle = txInfo.handle;
+
+    if (type_field) {
+        const {isChatRoom, type} = isChatTransaction(type_field)
+        if (!isChatRoom) {
+            return;
+        }
+        let result: any = "";
+        if (isMerkleRoot(offset)) {
+            result = await getCacheFromServer(dataTxid, offset);
+        } else {
+            result = await getTransactionDataFromBlockchainOnServer(dataTxid);
+        }
+        return handle+": "+result;
     }
 }
 
@@ -88,8 +108,9 @@ export async function fetchLargeFileAndDoCache(txId: string): Promise<string> {
         console.warn(`Merkle root mismatch, check your data carefully`);
         //we need to update this for smart fix. allow user inscribe from middle
     }
-   return data.result;
+    return data.result;
 }
+
 async function getParsedTransaction(transactionSignature: string, retries = 4) {
     for (let attempt = 1; attempt <= retries; attempt++) {
         try {
@@ -118,7 +139,7 @@ async function getParsedTransaction(transactionSignature: string, retries = 4) {
     return null
 }
 
-export async function joinChat(pdaString:string){
+export async function joinChat(pdaString: string) {
     const connection = new Connection(network, 'processed');
     const chatPDA = new PublicKey(pdaString);
     console.log(`Join chat on ${pdaString} ...`); // lets change this as a handle name (chat name)
@@ -126,15 +147,14 @@ export async function joinChat(pdaString:string){
     connection.onLogs(
         chatPDA,
         async (logs, ctx) => {
-            const { isChatRoom,type } = isChatTransaction(logs)
-            if (!isChatRoom) {
-                console.log('TRANSACTION IS NOT Chat', logs)
-                return
-            }
+
             const transactionSignature = logs.signature
 
-            const transactionDetails = await getParsedTransaction(transactionSignature)
-            console.log(transactionDetails)
+            const transactionData = await readChat(transactionSignature);
+            if (transactionData) {
+                console.log(transactionData)
+            }
+
         }
     );
 }

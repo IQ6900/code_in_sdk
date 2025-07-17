@@ -38,13 +38,12 @@ export async function getChunk(textData: string, chunkSize: number): Promise<str
     }
 }
 
-export function isChatTransaction(logs: Logs): { isChatRoom: boolean, type: string } {
-    if (!logs.logs || logs.logs.length === 0) {
+export function isChatTransaction(datatype: string): { isChatRoom: boolean, type: string } {
+    if (!datatype || datatype.length === 0) {
         return {isChatRoom: false, type: ""}
     }
-    const logString = logs.logs.join('')
 
-    if (logString.includes("group_chat")) {
+    if (datatype.includes("group_chat")) {
         return {isChatRoom: true, type: "group_chat"}
     }
     return {isChatRoom: false, type: ""}
