@@ -96,7 +96,6 @@ export async function txSend(tx: Transaction): Promise<string> {
     if (txid == undefined) {
         return "null";
     } else {
-        console.log('Transaction sent, txid:', txid);
         return txid;
     }
 }
