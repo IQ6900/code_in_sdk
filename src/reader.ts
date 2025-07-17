@@ -62,8 +62,7 @@ async function readChat(dataTxid: string) {
     const handle = txInfo.handle;
 
     if (type_field) {
-        const {isChatRoom, type} = isChatTransaction(type_field)
-        if (!isChatRoom) {
+        if (type_field != "group_chat") {
             return;
         }
         let result: any = "";
@@ -72,7 +71,7 @@ async function readChat(dataTxid: string) {
         } else {
             result = await getTransactionDataFromBlockchainOnServer(dataTxid);
         }
-        return handle+": "+result;
+       console.log(handle+": "+result);
     }
 }
 
@@ -111,34 +110,6 @@ export async function fetchLargeFileAndDoCache(txId: string): Promise<string> {
     return data.result;
 }
 
-async function getParsedTransaction(transactionSignature: string, retries = 4) {
-    for (let attempt = 1; attempt <= retries; attempt++) {
-        try {
-            const connection = new Connection(network, 'processed');
-
-            const transactionDetails = await connection.getParsedTransactions(
-                [transactionSignature],
-                {
-                    maxSupportedTransactionVersion: 0,
-                },
-            )
-            if (transactionDetails && transactionDetails[0] !== null) {
-                return transactionDetails
-            }
-
-            console.log(`Attempt ${attempt}: No transaction details found for ${transactionSignature}`)
-        } catch (error) {
-            console.error(`Attempt ${attempt}: Error fetching transaction details`, error)
-        }
-
-        // Delay before retrying
-        await new Promise((resolve) => setTimeout(resolve, 1000 * attempt))
-    }
-
-    console.error(`Failed to fetch transaction details after ${retries} retries for signature:`, transactionSignature)
-    return null
-}
-
 export async function joinChat(pdaString: string) {
     const connection = new Connection(network, 'processed');
     const chatPDA = new PublicKey(pdaString);
@@ -150,10 +121,8 @@ export async function joinChat(pdaString: string) {
 
             const transactionSignature = logs.signature
 
-            const transactionData = await readChat(transactionSignature);
-            if (transactionData) {
-                console.log(transactionData)
-            }
+          await readChat(transactionSignature);
+
 
         }
     );

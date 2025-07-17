@@ -37,14 +37,3 @@ export async function getChunk(textData: string, chunkSize: number): Promise<str
         return chunks;
     }
 }
-
-export function isChatTransaction(datatype: string): { isChatRoom: boolean, type: string } {
-    if (!datatype || datatype.length === 0) {
-        return {isChatRoom: false, type: ""}
-    }
-
-    if (datatype.includes("group_chat")) {
-        return {isChatRoom: true, type: "group_chat"}
-    }
-    return {isChatRoom: false, type: ""}
-}
