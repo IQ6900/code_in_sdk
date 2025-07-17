@@ -128,7 +128,7 @@ export async function joinChat(pdaString:string){
         async (logs, ctx) => {
             const { isChatRoom,type } = isChatTransaction(logs)
             if (!isChatRoom) {
-                // console.log('TRANSACTION IS NOT Chat', logs.signature)
+                console.log('TRANSACTION IS NOT Chat', logs)
                 return
             }
             const transactionSignature = logs.signature
