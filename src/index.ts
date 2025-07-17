@@ -1,5 +1,5 @@
 import {server_init, user_init} from './transaction';
-import {readCode, fetchLargeFileAndDoCache, dataValidation, fetchDataSignatures} from './reader';
+import {readCode, fetchLargeFileAndDoCache, dataValidation, fetchDataSignatures, joinChat} from './reader';
 import {codeIn, codeInAfterErr, codeToUserWallet,codeToPDA} from './uploader';
 import {getServerPDA} from "./client";
 
@@ -9,6 +9,7 @@ export default {
     getServerPDA,
     readCode,
     fetchLargeFileAndDoCache,
+    joinChat,
     dataValidation,
     fetchDataSignatures,
     codeIn,
