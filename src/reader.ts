@@ -61,6 +61,7 @@ async function readChat(dataTxid: string) {
     const type_field = txInfo.type_field;
     const handle = txInfo.handle;
 
+
     if (type_field) {
         if (type_field != "group_chat") {
             return;
@@ -71,7 +72,7 @@ async function readChat(dataTxid: string) {
         } else {
             result = await getTransactionDataFromBlockchainOnServer(dataTxid);
         }
-       console.log(handle+": "+result);
+        console.log(handle + ": " + result);
     }
 }
 
@@ -111,7 +112,7 @@ export async function fetchLargeFileAndDoCache(txId: string): Promise<string> {
 }
 
 export async function joinChat(pdaString: string) {
-    const connection = new Connection(network, 'processed');
+    const connection = new Connection(network, 'finalized');
     const chatPDA = new PublicKey(pdaString);
     console.log(`Join chat on ${pdaString} ...`); // lets change this as a handle name (chat name)
 
@@ -121,9 +122,7 @@ export async function joinChat(pdaString: string) {
 
             const transactionSignature = logs.signature
 
-          await readChat(transactionSignature);
-
-
+            await readChat(transactionSignature);
         }
     );
 }
