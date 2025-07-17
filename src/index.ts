@@ -1,11 +1,11 @@
-import {user_init} from './transaction';
+import {server_init, user_init} from './transaction';
 import {readCode, fetchLargeFileAndDoCache, dataValidation, fetchDataSignatures} from './reader';
 import {codeIn, codeInAfterErr, codeToUserWallet,codeToPDA} from './uploader';
-import {createServerInitTransactionOnServer, getServerPDA} from "./client";
+import {getServerPDA} from "./client";
 
 export default {
     user_init,
-    createServerInitTransactionOnServer,
+    server_init,
     getServerPDA,
     readCode,
     fetchLargeFileAndDoCache,

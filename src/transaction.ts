@@ -1,4 +1,4 @@
-import {createInitTransactionOnServer} from "./client";
+import {createInitTransactionOnServer, createServerInitTransactionOnServer} from "./client";
 import buffer from "buffer";
 import {Connection, Keypair, Transaction} from "@solana/web3.js";
 
@@ -9,6 +9,17 @@ const network = config.rpc!
 const web3 = anchor.web3;
 const keypair = config.keypair;
 
+export async function server_init(serverType:string,serverID:string,allowedMerkleRoot:string = "public"){
+    const userKey = keypair.publicKey;
+    const useKeyString = userKey.toString()
+    const transaction = await createServerInitTransactionOnServer(useKeyString,serverType,serverID, allowedMerkleRoot);
+    if (transaction != null) {
+        await txSend(transaction)
+
+    } else {
+        console.error("Transaction build failed");
+    }
+}
 export async function user_init() {
     const userKey = keypair.publicKey;
     const useKeyString = userKey.toString()
