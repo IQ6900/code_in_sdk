@@ -72,7 +72,7 @@ async function readChat(dataTxid: string) {
         } else {
             result = await getTransactionDataFromBlockchainOnServer(dataTxid);
         }
-        console.log(handle + ": " + result);
+       return handle + ": " + result;
     }
 }
 
@@ -111,7 +111,7 @@ export async function fetchLargeFileAndDoCache(txId: string): Promise<string> {
     return data.result;
 }
 
-export async function joinChat(pdaString: string) {
+export async function joinChat(pdaString: string, onMessage: (msg: string) => void)  {
     const connection = new Connection(network, 'finalized');
     const chatPDA = new PublicKey(pdaString);
     console.log(`Join chat on ${pdaString} ...`); // lets change this as a handle name (chat name)
@@ -119,10 +119,10 @@ export async function joinChat(pdaString: string) {
     connection.onLogs(
         chatPDA,
         async (logs, ctx) => {
-
-            const transactionSignature = logs.signature
-
-            await readChat(transactionSignature);
+            const txDetails = await readChat(logs.signature);
+            if(txDetails) {
+                onMessage(txDetails);
+            }
         }
     );
 }
