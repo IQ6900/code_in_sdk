@@ -82,9 +82,9 @@ async function makeSendDataTransactionsToPDA(chunkList: Array<string>, handle: s
             num++;
             const tx = await createCodeInTransactionOnServer(text, beforeHash, method, decode_break);
             beforeHash = await txSend(tx);
-            console.log(num.toString() + '/' + chunkList.length.toString())
+          //  console.log(num.toString() + '/' + chunkList.length.toString())
         } catch (error) {
-            console.error(`Transaction ${num} failed, beforeHash:${beforeHash} `, error);
+           // console.error(`Transaction ${num} failed, beforeHash:${beforeHash} `, error);
             let result;
             while (!result) {
                 const tx = await createCodeInTransactionOnServer(text, beforeHash, method, decode_break);
