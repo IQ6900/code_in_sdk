@@ -1,6 +1,6 @@
 import {Connection, PublicKey, LogsFilter} from "@solana/web3.js";
 import {config} from "./config";
-import {getChunk, isChatTransaction, isMerkleRoot} from "./utils";
+import {getChunk, isMerkleRoot} from "./utils";
 import {
     fetchChunksUntilComplete,
     getCacheFromServer,
