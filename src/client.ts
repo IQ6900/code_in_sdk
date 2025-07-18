@@ -275,8 +275,11 @@ export async function fetchChunksUntilComplete(txId: string) {
         i++;
         const url = `${iqHost}/get_transaction_chunks/${currentTx}`; //read transaction by 100 tx read
         const response = await fetch(url);
-        console.log(response.text())
-        const data: any = await response.json();
+
+        const text = await response.text();
+        console.log("Response body:", text);
+        
+        //const data: any = await response.json();
 
         const chars = data.resultStr;
         allChunks.push(chars);
