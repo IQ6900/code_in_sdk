@@ -279,7 +279,7 @@ export async function fetchChunksUntilComplete(txId: string) {
         const text = await response.text();
         console.log("Response body:", text);
         
-        //const data: any = await response.json();
+        const data: any = await response.json();
 
         const chars = data.resultStr;
         allChunks.push(chars);
