@@ -282,7 +282,7 @@ export async function fetchChunksUntilComplete(txId: string) {
         allChunks.push(chars);
         currentTx = data.beforeTx;
 
-        if (currentTx === "Genesis") break;
+        if (!currentTx||currentTx === "Genesis") break;
     }
     const resultReverse = allChunks.reverse();
     const result = resultReverse.join("");
