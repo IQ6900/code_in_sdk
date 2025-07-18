@@ -13,7 +13,7 @@ export async function server_init(serverType: string, serverID: string, allowedM
     const useKeyString = userKey.toString()
     const PDA = await getServerPDA(useKeyString, serverID);
 
-    const isPDAExist = await pda_check(new PublicKey(PDA));
+    const isPDAExist = await pda_check(PDA);
     if (isPDAExist) {
         console.log("PDA Exist :", PDA);
         return PDA
@@ -34,7 +34,7 @@ export async function user_init() {
     const transaction = await createInitTransactionOnServer(useKeyString)
     const PDA = await getDBPDA(useKeyString);
 
-    const isPDAExist = await pda_check(new PublicKey(PDA));
+    const isPDAExist = await pda_check(PDA);
     if (isPDAExist) {
         console.log("PDA Exist");
         return PDA
@@ -48,11 +48,12 @@ export async function user_init() {
     }
 }
 
-export async function pda_check(PDA: PublicKey) {
+export async function pda_check(PDA: string) {
     try {
+        const PDAPubkey = new PublicKey(PDA)
         const connection = new web3.Connection(network);
 
-        return await connection.getAccountInfo(PDA);
+        return await connection.getAccountInfo(PDAPubkey);
     } catch (error) {
         console.error("PDA Check failed:", error);
     }
