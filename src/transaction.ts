@@ -8,12 +8,12 @@ const anchor = require("@coral-xyz/anchor");
 const network = config.rpc!
 const web3 = anchor.web3;
 const keypair = config.keypair;
-export async function server_init(serverType: string, serverID: string, allowedMerkleRoot: string = "public") {
+export async function serverInit(serverType: string, serverID: string, allowedMerkleRoot: string = "public") {
     const userKey = keypair.publicKey;
     const useKeyString = userKey.toString()
     const PDA = await getServerPDA(useKeyString, serverID);
 
-    const isPDAExist = await pda_check(PDA);
+    const isPDAExist = await pdaCheck(PDA);
     if (isPDAExist) {
         console.log("PDA Exist :", PDA);
         return PDA
@@ -28,13 +28,13 @@ export async function server_init(serverType: string, serverID: string, allowedM
     }
 }
 
-export async function user_init() {
+export async function userInit() {
     const userKey = keypair.publicKey;
     const useKeyString = userKey.toString()
     const transaction = await createInitTransactionOnServer(useKeyString)
     const PDA = await getDBPDA(useKeyString);
 
-    const isPDAExist = await pda_check(PDA);
+    const isPDAExist = await pdaCheck(PDA);
     if (isPDAExist) {
         console.log("PDA Exist");
         return PDA
@@ -48,7 +48,7 @@ export async function user_init() {
     }
 }
 
-export async function pda_check(PDA: string) {
+export async function pdaCheck(PDA: string) {
     try {
         const PDAPubkey = new PublicKey(PDA)
         const connection = new web3.Connection(network);
