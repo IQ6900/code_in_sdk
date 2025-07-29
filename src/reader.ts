@@ -110,7 +110,33 @@ export async function fetchLargeFileAndDoCache(txId: string): Promise<string> {
     }
     return data.result;
 }
+export async function getChatRecords(pdaString:string,sizeLimit:number, onMessage: (msg: string) => void){
+    const connection = new Connection(network, 'confirmed');
 
+    const chatPDA = new PublicKey(pdaString);
+    try {
+        const signatures = await connection.getSignaturesForAddress(chatPDA, {
+            limit: sizeLimit,
+        });
+
+        if (signatures.length === 0) return [];
+
+        for (const sig of signatures) {
+            try {
+                const txDetails = await readChat(sig.signature);
+                if (txDetails) {
+                    onMessage(txDetails);
+                }
+            } catch (err) {
+                console.error(`Failed to read chat for ${sig.signature}:`, err);
+            }
+        }
+    } catch (error) {
+        console.error('Failed to fetch chat records:', error);
+        return [];
+    }
+
+}
 export async function joinChat(pdaString: string, onMessage: (msg: string) => void)  {
     const connection = new Connection(network, 'finalized');
     const chatPDA = new PublicKey(pdaString);
