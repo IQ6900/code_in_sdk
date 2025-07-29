@@ -120,8 +120,9 @@ export async function getChatRecords(pdaString:string,sizeLimit:number, onMessag
         });
 
         if (signatures.length === 0) return [];
+        const reversedSignatures = signatures.reverse();
 
-        for (const sig of signatures) {
+        for (const sig of reversedSignatures) {
             try {
                 const txDetails = await readChat(sig.signature);
                 if (txDetails) {
