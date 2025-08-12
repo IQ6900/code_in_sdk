@@ -54,7 +54,7 @@ Before writing data for a wallet, you **must initialize the user account** on-ch
 ```ts
 import iqsdk from 'iq-sdk';
 
-await iqsdk.user_init();
+await iqsdk.userInit();
 ```
 
 ---
