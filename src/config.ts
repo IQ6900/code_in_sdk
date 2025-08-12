@@ -11,6 +11,6 @@ export const config = {
     iqHost: "https://solanacontractapi.uc.r.appspot.com",
     signerPrivateKey: process.env.SIGNER_PRIVATE_KEY || '',
     keypair:keypair,
-    transactionSizeLimit:900,
+    transactionSizeLimit:850,
     sizeLimitForSplitCompression:10000,
 };

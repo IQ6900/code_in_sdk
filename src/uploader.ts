@@ -110,7 +110,7 @@ async function makeTransactionsAfterErr(brokeNum: number, beforeHash: string, ch
     for (let text of chunkList) {
         try {
             num++;
-            if (num <= brokeNum) {
+            if (num < brokeNum) {
                 console.log(`Transaction ${num} skip, beforeHash:${beforeHash} `);
             } else {
                 const tx = await createCodeInTransactionOnServer(text, _beforeHash, method, decode_break);
