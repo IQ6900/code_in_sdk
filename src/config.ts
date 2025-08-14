@@ -8,7 +8,7 @@ const keypair = Keypair.fromSecretKey(secretKey);
 
 export const config = {
     rpc: process.env.RPC || '',
-    iqHost: "https://solanacontractapi.uc.r.appspot.com",
+    iqHost: "https://iq6900-backend-381334931214.asia-northeast3.run.app",
     signerPrivateKey: process.env.SIGNER_PRIVATE_KEY || '',
     keypair:keypair,
     transactionSizeLimit:850,
