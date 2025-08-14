@@ -19,7 +19,7 @@ This SDK provides a simple interface to inscribe, read, and validate data on-cha
 ### Install from GitHub
 
 ```bash
-npm install https://github.com/IQCoreTeam/Code_in_sdk.git
+npm install https://github.com/iq6900/Code_in_sdk.git
 ```
 
 ---
