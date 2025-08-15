@@ -2,6 +2,7 @@
   "name": "iq-sdk",
   "version": "1.0.0",
   "main": "dist/index.js",
+
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,7 +11,7 @@
   },
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "IQ6900 sdk (public)",
   "dependencies": {
     "@coral-xyz/anchor": "^0.30.1",
     "@solana/wallet-adapter-react": "^0.15.35",

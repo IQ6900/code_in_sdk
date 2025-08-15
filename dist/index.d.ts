@@ -1,5 +1,5 @@
 import { serverInit, pdaCheck, userInit } from './transaction';
-import { readCode, fetchLargeFileAndDoCache, dataValidation, fetchDataSignatures, joinChat } from './reader';
+import { readCode, fetchLargeFileAndDoCache, dataValidation, fetchDataSignatures, joinChat, getChatRecords } from './reader';
 import { codeIn, codeInAfterErr, codeToUserWallet, codeToPDA } from './uploader';
 import { getServerPDA, getDBPDA } from "./client";
 import { getMyPublicKey } from "./utils";
@@ -13,6 +13,7 @@ declare const _default: {
     readCode: typeof readCode;
     fetchLargeFileAndDoCache: typeof fetchLargeFileAndDoCache;
     joinChat: typeof joinChat;
+    getChatRecords: typeof getChatRecords;
     dataValidation: typeof dataValidation;
     fetchDataSignatures: typeof fetchDataSignatures;
     codeIn: typeof codeIn;

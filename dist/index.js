@@ -15,6 +15,7 @@ exports.default = {
     readCode: reader_1.readCode,
     fetchLargeFileAndDoCache: reader_1.fetchLargeFileAndDoCache,
     joinChat: reader_1.joinChat,
+    getChatRecords: reader_1.getChatRecords,
     dataValidation: reader_1.dataValidation,
     fetchDataSignatures: reader_1.fetchDataSignatures,
     codeIn: uploader_1.codeIn,

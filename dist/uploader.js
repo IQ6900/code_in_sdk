@@ -104,7 +104,7 @@ async function makeTransactionsAfterErr(brokeNum, beforeHash, chunkList, handle,
     for (let text of chunkList) {
         try {
             num++;
-            if (num <= brokeNum) {
+            if (num < brokeNum) {
                 console.log(`Transaction ${num} skip, beforeHash:${beforeHash} `);
             }
             else {
