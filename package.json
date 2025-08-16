@@ -1,6 +1,6 @@
 {
   "name": "iq-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
 
   "types": "dist/index.d.ts",
@@ -27,7 +27,6 @@
     "express": "^4.21.2",
     "fs": "^0.0.1-security",
     "node-fetch": "^3.3.2",
-    "opencv.js": "^1.2.1",
     "progress": "^2.0.3",
     "sharp": "^0.33.5",
     "timers": "^0.1.1",
